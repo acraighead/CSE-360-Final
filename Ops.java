@@ -2,12 +2,10 @@ import javax.swing.*;
 import javax.swing.table.TableModel;
 import java.io.*;
 import java.util.*;
-//import java.util.concurrent.locks;
 import java.lang.*;
-import java.util.concurrent.locks.Lock;
 
 
-public class Ops extends DatePicker{
+public class Ops{
 	
 	public static LinkedList<Roster> list = new LinkedList<Roster>();
 	public static LinkedList<Attendance> attend = new LinkedList<Attendance>();
@@ -36,48 +34,23 @@ public class Ops extends DatePicker{
 	}
 	
 	
-	public static void takeAttendance(File csv)
+	public static ArrayList<String> takeAttendance(File csv,String month,String day)
 	{
+		ArrayList<String> nonStudents = new ArrayList<String>();
 		try {
 	         File file = csv;
 	         FileReader fr = new FileReader(file);
 	         BufferedReader br = new BufferedReader(fr);
 	         String line = "";
 	         String[] input;
-	         Boolean selected = false;
 
 
-			String month;
-			String day;
-
-			DatePicker d = new DatePicker();
-			d.setVisible(true);
-
-			while(!selected){
-				d.setVisible(true);
-				selected = d.checkButton();
-			}
-
-			month = d.getMonth();
-			day = d.getDay();
-
-
-
-
-			month = d.getMonth();
-			day = d.getDay();
-	         
-
-	        		 
-	         
-	         
 	         while((line = br.readLine()) != null) {
 	            input = line.split(delimiter);
 	            
 	            String email = input[0];
 	            int time = Integer.parseInt(input[1]);
-	            
-	            
+
 	            for(Roster r : list)
 	            {
 	            		
@@ -108,40 +81,21 @@ public class Ops extends DatePicker{
 							{
 								System.out.println("Student " + email + " does not exist in our records\n");
 							}
-
-
 						}
-
-	            		
 	           		}
 	            }
+				 if(search(email)==-1){
+					 nonStudents.add(email+","+time);
+				 }
 	         }
 	         br.close();
 	         } catch(IOException ioe) {
 	            ioe.printStackTrace();
 	         }
+
+		return nonStudents;
 	}
-	
-	public static void write(String cvs) {
-		try {
-			FileWriter fw = new FileWriter(cvs);
-	 
-			for (Roster r : list ) {
-				fw.write(r.toCSV() + " ");
-				for(Attendance a: attend)
-				{
-					
-					
-				}
-			
-			}
-		
-		fw.close();
-		} catch(IOException ioe) {
-			ioe.printStackTrace();
-		}
-		
-	}
+
 	public static void save(JTable finalTable){
 		try{
 
@@ -174,10 +128,10 @@ public class Ops extends DatePicker{
 	public static LinkedList<Attendance> getAttend(){
 		return attend;
 	}
-	public int search(String asu){
+	public static int search(String asu){
 		int index=-1;
-		for(int i=0;i<attend.size();i++){
-			if(attend.get(i).asurite.compareTo(asu)==0){
+		for(int i=0;i<list.size();i++){
+			if(list.get(i).getASU().compareTo(asu)==0){
 				index =i;
 				return index;
 			}

@@ -1,5 +1,6 @@
 /**
- *   Authors: Jacob Rollings
+ *   Authors: Jacob Rollings, Seth Ryals, Aaron Craighead
+ *            
  *   Class ID: CSE 360, Class# 70605 
  *   Final Project
  *   Description: This is the ScatterPlot class that contains
@@ -9,7 +10,7 @@
  *   Create the dataset for the plot to use.
  */
 
-//
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.util.LinkedList;
@@ -94,7 +95,9 @@ public class ScatterPlot{
 		/**
 		 * This is the createDataSet Method, it has code to create the 
 		 * dataset of the data in the attendance linked list. It also calculates
-		 * which percent region that the values are in and then sets up the data series
+		 * which percent region that the values are in and then sets up the data series.
+		 * It will use a floor function to categorize the points on the graph.
+		 * ex. 29% will be placed in the 20% category.
 		 */
 		
 		XYSeriesCollection data = new XYSeriesCollection();
@@ -104,60 +107,93 @@ public class ScatterPlot{
 		double percentage;
 		
 		
-		XYSeries seriesData = new XYSeries("Attendence Percent");
+		XYSeries seriesData = new XYSeries(AttendanceTimes.get(0).getDate());
 		
 		//Go through whole linked list and calculate attendance percent
 		for(int i = 0; i<AttendanceTimes.size(); i++)
 		{
+			if(i>=1)
+			{
+				if(!AttendanceTimes.get(i).getDate().equals
+						(AttendanceTimes.get(i-1).getDate()))
+				{
+					//when it finds that the date isn't the same, it will 
+					//make a new dataseries
+					seriesData.add(0,count[0]);
+					seriesData.add(10,count[1]);
+					seriesData.add(20,count[2]);
+					seriesData.add(30,count[3]);
+					seriesData.add(40,count[4]);
+					seriesData.add(50,count[5]);
+					seriesData.add(60,count[6]);
+					seriesData.add(70,count[7]);
+					seriesData.add(80,count[8]);
+					seriesData.add(90,count[9]);
+					seriesData.add(100,count[10]);
+					
+					//add the series onto the collection
+					data.addSeries(seriesData);
+					//Reset the series data to a different name to add to dataset
+					seriesData = new XYSeries(AttendanceTimes.get(i).getDate());
+					
+					//reset the counts for the next wave of dates
+					for(int j = 0 ; j < 11 ; j++)
+					{
+						count[j] = 0;
+					}
+				}
+			}
+			
 			percentage = AttendanceTimes.get(i).getTime();
 			percentage = percentage/75;
-			if(percentage<=0)
-			{
-				count[0] += 1;
-			}
-			else if(percentage<.1)
-			{
-				count[1] += 1;
-			}
-			else if(percentage<.2)
-			{
-				count[2] += 1;
-			}
-			else if(percentage<.3)
-			{
-				count[3] += 1;
-			}
-			else if(percentage<.4)
-			{
-				count[4] += 1;
-			}
-			else if(percentage<.5)
-			{
-				count[5] += 1;
-			}
-			else if(percentage<.6)
-			{
-				count[6] += 1;
-			}
-			else if(percentage<.7)
-			{
-				count[7] += 1;
-			}
-			else if(percentage<.8)
-			{
-				count[8] += 1;
-			}
-			else if(percentage<9)
-			{
-				count[9] += 1;
-			}
-			else if(percentage>=1)
+			if(percentage>=1)
 			{
 				count[10] += 1;
 			}
+			else if(percentage>=.9)
+			{
+				count[9] += 1;
+			}
+			else if(percentage>=.8)
+			{
+				count[8] += 1;
+			}
+			else if(percentage>=.7)
+			{
+				count[7] += 1;
+			}
+			else if(percentage>=.6)
+			{
+				count[6] += 1;
+			}
+			else if(percentage>=.5)
+			{
+				count[5] += 1;
+			}
+			else if(percentage>=.4)
+			{
+				count[4] += 1;
+			}
+			else if(percentage>=.3)
+			{
+				count[3] += 1;
+			}
+			else if(percentage>=.2)
+			{
+				count[2] += 1;
+			}
+			else if(percentage>=.1)
+			{
+				count[1] += 1;
+			}
+			else if(percentage<.1)
+			{
+				count[0] += 1;
+			}		
 		}
 		
-		//set percent and total count to an xy location
+		//when it finds that the date isn't the same, it will 
+		//make a new dataseries
 		seriesData.add(0,count[0]);
 		seriesData.add(10,count[1]);
 		seriesData.add(20,count[2]);
@@ -172,11 +208,9 @@ public class ScatterPlot{
 		
 		//add the series onto the collection
 		data.addSeries(seriesData);
+		
 		return data;
 	}
-	
-
-
 }
 
 
